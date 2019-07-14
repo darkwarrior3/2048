@@ -16,7 +16,7 @@ g30=O
 g31=O
 g32=O
 g33=O
-inp="2048"
+ch="-"
 #get first 2 numbers for the grid
 for z in {0..1}; do
     rand1=$(($RANDOM % 4))
@@ -27,21 +27,32 @@ for z in {0..1}; do
 done
 #prints the board and caclualtes the moves
 while true;do
+    clear
+    for z in {0..3};do
+        for y in {0..3};do
+            var='g'$z$y
+            v=${!var}
+            if [ ${#v} -gt 1 ] && ! [[ $v =~ ^O+$ ]];then 
+                eval $var=${v//O/}
+            fi
+        done
+    done
     #clear
     echo ""
-    figlet -t -c -f future $inp #Header/Control
-    inp=2048
+    figlet -t -c -f pagga 2048
+    figlet -t -c -f pagga $ch #Header/Control
+    inp=0
     #to make grid size uniform
     for x in {0..3}; do
-        v1='g0'$x
+        v1='g0'$x #var
         v2='g1'$x
         v3='g2'$x
         v4='g3'$x
-        n1=${!v1}
+        n1=${!v1} #value of var
         n2=${!v2}
         n3=${!v3}
         n4=${!v4}
-        n1=${#n1}
+        n1=${#n1} #length of var
         n2=${#n2}
         n3=${#n3}
         n4=${#n4}
@@ -187,7 +198,7 @@ while true;do
     done
     #get user input to move the board/only accepts WASD keys
     until [[ $inp =~ [WwAaSsDd] ]];do
-       echo "W-Up;A-Rght;S-Down;D-Right"
+        echo "W-Up;A-Rght;S-Down;D-Right"
         read -n1 inp
     done
     #check the input and set directions and biases accordingly
@@ -196,21 +207,25 @@ while true;do
             stat=0
             bias='^\g0.?$'
             direction='-y'
+            ch='/\'
             ;;
         [Ss]) #down
             stat=1
             bias='^\g3.?$'
             direction='+y'
+            ch='\/'
             ;;
         [dD]) #right
             stat=1
             bias='^\g.?3$'
             direction='+x'
+            ch='>'
             ;;
         [Aa]) #left
             stat=0
             bias='^\g.?0$'
             direction='-x'
+            ch='<'
             ;;
         *)
             ;;

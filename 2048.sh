@@ -1,3 +1,4 @@
+#!/bin/bash
 g00=O
 g01=O
 g02=O
@@ -23,7 +24,7 @@ for z in {0..1}; do
     eval ${n}=$rand3
 done
 while true;do
-    #clear
+    clear
     figlet -t -c -f pagga $inp
     inp=2048
     for x in {0..3}; do
@@ -185,12 +186,12 @@ while true;do
         [Ww])
             stat=0
             bias='^\g0.?$'
-            direction='+y'
+            direction='-y'
             ;;
         [Ss])
             stat=1
             bias='^\g3.?$'
-            direction='-y'
+            direction='+y'
             ;;
         [dD])
             stat=1
@@ -209,10 +210,10 @@ while true;do
     oper2=0
     case $direction in
         -y)
-            let oper1+=1
+            let oper1-=1
             ;;
         +y)
-            let oper1-=1
+            let oper1+=1
             ;;
         -x)
             let oper2-=1
@@ -228,17 +229,17 @@ while true;do
                 for n in {0..3};do
                     var='g'${i}${n}
                     var2='g'$((${i}+$oper1))$((${n}+$oper2))
-                    var3=${!var}
-                    var4=${!var2}
                     if ! [[ $var =~ $bias ]]; then
-                        if [[ ${!var} =~ [O]+ ]] && [[ ${!var2} =~ [O]+ ]]; then
+                        var3=${!var}
+                        var4=${!var2}
+                        if [[ ${!var} =~ ^O+$ ]] && [[ ${!var2} =~ ^O+$ ]]; then
                             [ 1 -eq 1 ]
-                        elif [[ ${!var} =~ [^O]+ ]] && [[ ${!var2} =~ [O]+ ]]; then
-                            eval $var2=${!var}
+                        elif [[ ${!var} =~ O*.+ ]] && [[ ${!var2} =~ ^O+$ ]]; then
+                            eval $var2=${var3//O/}
                             eval $var=O
-                        elif [ ${var3//O/} -eq ${var4//O/} ]; then
+                        elif [[ ${var3//O/} == ${var4//O/} ]]; then
                             eval $var=O
-                            eval let $var2*=2
+                            eval let $var2=2*${var4//O/}
                         fi
 
                     fi
@@ -249,17 +250,17 @@ while true;do
                 for n in {3..0};do
                     var='g'${i}${n}
                     var2='g'$((${i}+$oper1))$((${n}+$oper2))
-                    var3=${!var}
-                    var4=${!var2}
                     if ! [[ $var =~ $bias ]]; then
-                        if [[ ${!var} == O ]] && [[ ${!var2} == O ]]; then
+                        var3=${!var}
+                        var4=${!var2}
+                        if [[ ${!var} =~ ^O+$ ]] && [[ ${!var2} =~ ^O+$ ]]; then
                             [ 1 -eq 1 ]
-                        elif [[ ${!var} != O ]] && [[ ${!var2} == O ]]; then
-                            eval $var2=${!var}
+                        elif [[ ${!var} =~ O*.+ ]] && [[ ${!var2} =~ ^O+$ ]]; then
+                            eval $var2=${var3//O/}
                             eval $var=O
                         elif [[ ${var3//O/} == ${var4//O/} ]]; then
                             eval $var=O
-                            eval let $var2*=2
+                            eval let $var2=2*${var4//O/}
                         fi
 
                     fi
@@ -268,15 +269,13 @@ while true;do
         fi
     done
     loop=1
-    test=0
     while [ $loop -eq 1 ]; do
         rand1=$(($RANDOM % 4))
         rand2=$(($RANDOM % 4))
         rand3=$((2*(($RANDOM % 2)+1)))
         n="g${rand1}$rand2"
-        [[ ${!n} == O ]] && test=1
-        if [ $test -eq 1 ]; then
-            echo Before=${!n}
+        if [[ ${!n} =~ ^O+$ ]];then
+            echo Before=$n=${!n}
             eval ${n}=$rand3
             echo After=$n=$rand3
             loop=0

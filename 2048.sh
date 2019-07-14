@@ -186,7 +186,7 @@ while true;do
     done
     #get user input to move the board/only accepts WASD keys
     until [[ $inp =~ [WwAaSsDd] ]];do
-       echo printf "W-Up;A-Rght;S-Down;D-Right"
+       echo "W-Up;A-Rght;S-Down;D-Right"
         read -n1 inp
     done
     #check the input and set directions and biases accordingly

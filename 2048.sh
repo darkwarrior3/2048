@@ -249,7 +249,6 @@ while true;do
                             eval let $var2=2*${var4//O/}
                         fi
                     fi
-                    d
                 done
             done
         else #if +ve direction then execute from -ve --> +ve

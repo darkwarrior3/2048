@@ -1,4 +1,5 @@
 #!/bin/bash
+#initialize vars/grid
 g00=O
 g01=O
 g02=O
@@ -16,6 +17,7 @@ g31=O
 g32=O
 g33=O
 inp="2048"
+#get first 2 numbers for the grid
 for z in {0..1}; do
     rand1=$(($RANDOM % 4))
     rand2=$(($RANDOM % 4))
@@ -23,10 +25,12 @@ for z in {0..1}; do
     n="g${rand1}$rand2"
     eval ${n}=$rand3
 done
+#prints the board and caclualtes the moves
 while true;do
-    clear
-    figlet -t -c -f pagga $inp
+    #clear
+    figlet -t -c -f pagga $inp #Header/Control
     inp=2048
+    #to make grid size uniform
     for x in {0..3}; do
         v1='g0'$x
         v2='g1'$x
@@ -177,28 +181,31 @@ while true;do
         v3=g$x'2'
         v4=g$x'3'
         var='| '${!v1}' | '${!v2}' | '${!v3}' | '${!v4}' | '
+        #prints the grid
         figlet -t -f future ${var}
     done
+    #get user input to move the board/only accepts WASD keys
     until [[ $inp =~ [WwAaSsDd] ]];do
         read -n1 inp
     done
+    #check the input and set directions and biases accordingly
     case $inp in
-        [Ww])
+        [Ww]) #up
             stat=0
             bias='^\g0.?$'
             direction='-y'
             ;;
-        [Ss])
+        [Ss]) #down
             stat=1
             bias='^\g3.?$'
             direction='+y'
             ;;
-        [dD])
+        [dD]) #right
             stat=1
             bias='^\g.?3$'
             direction='+x'
             ;;
-        [Aa])
+        [Aa]) #left
             stat=0
             bias='^\g.?0$'
             direction='-x'
@@ -208,6 +215,7 @@ while true;do
     esac
     oper1=0
     oper2=0
+    #set the operations according to the directions
     case $direction in
         -y)
             let oper1-=1
@@ -222,52 +230,51 @@ while true;do
             let oper2+=1
             ;;
     esac
-    echo ""
     for c in {0..2}; do
-        if [ $stat -eq 1 ]; then
+        if [ $stat -eq 1 ]; then #if negative direction then execute from +ve --> -ve
             for i in {0..3};do
                 for n in {0..3};do
-                    var='g'${i}${n}
-                    var2='g'$((${i}+$oper1))$((${n}+$oper2))
+                    var='g'${i}${n} #var to check
+                    var2='g'$((${i}+$oper1))$((${n}+$oper2)) #var next to var in the specified direction
                     if ! [[ $var =~ $bias ]]; then
-                        var3=${!var}
-                        var4=${!var2}
-                        if [[ ${!var} =~ ^O+$ ]] && [[ ${!var2} =~ ^O+$ ]]; then
+                        var3=${!var} #value of var
+                        var4=${!var2} #value of var2
+                        if [[ ${!var} =~ ^O+$ ]] && [[ ${!var2} =~ ^O+$ ]]; then #if both equal to 0
                             [ 1 -eq 1 ]
-                        elif [[ ${!var} =~ O*.+ ]] && [[ ${!var2} =~ ^O+$ ]]; then
+                        elif [[ ${!var} =~ O*.+ ]] && [[ ${!var2} =~ ^O+$ ]]; then #if one equal tp 0
                             eval $var2=${var3//O/}
                             eval $var=O
-                        elif [[ ${var3//O/} == ${var4//O/} ]]; then
+                        elif [[ ${var3//O/} == ${var4//O/} ]]; then #if both equal
                             eval $var=O
                             eval let $var2=2*${var4//O/}
                         fi
-
                     fi
+                    d
                 done
             done
-        else
+        else #if +ve direction then execute from -ve --> +ve
             for i in {3..0};do
                 for n in {3..0};do
-                    var='g'${i}${n}
-                    var2='g'$((${i}+$oper1))$((${n}+$oper2))
+                    var='g'${i}${n} #var to check
+                    var2='g'$((${i}+$oper1))$((${n}+$oper2)) #var next to var in the specified direction
                     if ! [[ $var =~ $bias ]]; then
-                        var3=${!var}
-                        var4=${!var2}
-                        if [[ ${!var} =~ ^O+$ ]] && [[ ${!var2} =~ ^O+$ ]]; then
+                        var3=${!var} #value of var
+                        var4=${!var2} #value of var2
+                        if [[ ${!var} =~ ^O+$ ]] && [[ ${!var2} =~ ^O+$ ]]; then #if both equal to 0
                             [ 1 -eq 1 ]
-                        elif [[ ${!var} =~ O*.+ ]] && [[ ${!var2} =~ ^O+$ ]]; then
+                        elif [[ ${!var} =~ O*.+ ]] && [[ ${!var2} =~ ^O+$ ]]; then #if one equal tp 0
                             eval $var2=${var3//O/}
                             eval $var=O
-                        elif [[ ${var3//O/} == ${var4//O/} ]]; then
+                        elif [[ ${var3//O/} == ${var4//O/} ]]; then #if both equal
                             eval $var=O
                             eval let $var2=2*${var4//O/}
                         fi
-
                     fi
                 done
             done
         fi
     done
+    #get an new number for the grid every move
     loop=1
     while [ $loop -eq 1 ]; do
         rand1=$(($RANDOM % 4))

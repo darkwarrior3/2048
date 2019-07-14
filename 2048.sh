@@ -28,7 +28,8 @@ done
 #prints the board and caclualtes the moves
 while true;do
     #clear
-    figlet -t -c -f pagga $inp #Header/Control
+    echo ""
+    figlet -t -c -f future $inp #Header/Control
     inp=2048
     #to make grid size uniform
     for x in {0..3}; do

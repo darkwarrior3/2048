@@ -186,7 +186,7 @@ while true;do
     done
     #get user input to move the board/only accepts WASD keys
     until [[ $inp =~ [WwAaSsDd] ]];do
-        printf "W-Up;A-Rght;S-Down;D-Right"
+       echo printf "W-Up;A-Rght;S-Down;D-Right"
         read -n1 inp
     done
     #check the input and set directions and biases accordingly
@@ -282,9 +282,9 @@ while true;do
         rand3=$((2*(($RANDOM % 2)+1)))
         n="g${rand1}$rand2"
         if [[ ${!n} =~ ^O+$ ]];then
-            echo Before=$n=${!n}
+            #echo Before=$n=${!n}
             eval ${n}=$rand3
-            echo After=$n=$rand3
+            #echo After=$n=$rand3
             loop=0
         fi
     done

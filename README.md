@@ -1,2 +1,2 @@
 # 2048
-2048 bash
+Enjoy this 2048 in bash.
